@@ -24,6 +24,7 @@ func main() {
 
 	rootmux := goji.NewMux()
 	rootmux.HandleFunc(pat.Get("/Students"), allstudentHandler)
+	rootmux.HandleFunc(pat.Get("/Student/:name"), StudentHandler)
 	http.ListenAndServe(":8089", rootmux)
 
 	time.Sleep(8 * time.Hour)
@@ -37,6 +38,15 @@ func allstudentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	studentjson, _ := json.Marshal(allstudents)
+
+	fmt.Fprintf(w, string(studentjson))
+}
+
+func StudentHandler(w http.ResponseWriter, r *http.Request) {
+	studentName := pat.Param(r, "name")
+	student := allstudentmap[studentName]
+
+	studentjson, _ := json.Marshal(student)
 
 	fmt.Fprintf(w, string(studentjson))
 }
